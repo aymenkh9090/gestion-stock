@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="dashboard/index">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Tableau de bord</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <!-- GESTION DES FOURNISSEURS -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseFournisseurs"
+           aria-expanded="false" aria-controls="collapseFournisseurs">
+            <i class="fas fa-truck"></i>
+            <span>Gestion des Fournisseurs</span>
+        </a>
+        <div id="collapseFournisseurs" class="collapse" aria-labelledby="headingFournisseurs" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:href="@{/fournisseurs}">Liste des Fournisseurs</a>
+                <a class="collapse-item" th:href="@{/fournisseurs/ajouter}">Ajouter Fournisseur</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- GESTION DES PRODUITS -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseProduits"
+           aria-expanded="false" aria-controls="collapseProduits">
+            <i class="fas fa-boxes"></i>
+            <span>Gestion des Produits</span>
+        </a>
+        <div id="collapseProduits" class="collapse" aria-labelledby="headingProduits" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:href="@{/produits}">Liste des Produits</a>
+                <a class="collapse-item" th:href="@{/produits/ajouter}">Ajouter Produit</a>
+            </div>
+        </div>
+    </li>
+
+    <!-- MESSAGERIE / CHAT -->
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseChat"
+           aria-expanded="false" aria-controls="collapseChat">
+            <i class="fas fa-comments"></i>
+            <span>Messagerie</span>
+        </a>
+        <div id="collapseChat" class="collapse" aria-labelledby="headingChat" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <a class="collapse-item" th:href="@{/chat}">Discussion</a>
+                <a class="collapse-item" th:href="@{/chat/historique}">Historique</a>
+            </div>
+        </div>
+    </li>
+
+</div>
+</body>
+</html>

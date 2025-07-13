@@ -10,18 +10,18 @@ public class DashboardController {
 
     @GetMapping("/superadmin")
     public String superAdmin() {
-        return "dashboard/dashboard_superadmin";
+        return "dashboard/superadmin/dashboard_superadmin";
        // return "index";
     }
 
     @GetMapping("/user")
     public String user(){
-        return "dashboard/dashboard_user";
+        return "dashboard/user/dashboard_user";
     }
 
     @GetMapping("/admin")
     public String admin(){
-        return "dashboard/dashboard_admin";
+        return "dashboard/admin/dashboard_admin";
     }
 
 
