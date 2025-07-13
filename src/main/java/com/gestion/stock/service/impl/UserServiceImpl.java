@@ -5,13 +5,18 @@ import com.gestion.stock.entities.Role;
 import com.gestion.stock.entities.User;
 import com.gestion.stock.repository.RoleRepository;
 import com.gestion.stock.repository.UserRepository;
+import com.gestion.stock.service.EmailService;
 import com.gestion.stock.service.UserService;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 
@@ -23,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
     private JavaMailSender mailSender;
+    private final EmailService emailService;
 
 
     @Override
@@ -132,23 +138,25 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(id);
     }
 
-
     @Override
     @Transactional
-    public void updateRole(Long userId, Set<Erole> newRoleNames) {
+    public void updateRole(Long userId,Erole newRoleName) {
 
-        User user =
-                userRepository.findById(userId)
-                        .orElseThrow(()-> new RuntimeException("Utilisateur avec Id :  " + userId + " n'existe pas!!"));
-
-        Set<Role> newRoles = new HashSet<>();
-        newRoleNames.forEach(roleName -> {
-            Role role = roleRepository.findByRoleName(roleName)
-                    .orElseThrow(() -> new RuntimeException("le role " + roleName + "n'existe pas!!"));
-            newRoles.add(role);
-        });
-        user.setRoles(newRoles);
-        userRepository.save(user);
+       User user =
+               userRepository.findById(userId)
+                       .orElseThrow(() -> new RuntimeException("Utilisater"+userId+" n'existe pas!!! "));
+       Role newRole =
+               roleRepository.findByRoleName(newRoleName)
+               .orElseThrow(() -> new RuntimeException("Role not found"));
+       Set<Role> roles = new HashSet<>();
+       roles.add(newRole);
+       user.setRoles(roles);
+       userRepository.save(user);
+        try {
+            emailService.sendActionNotification(user.getEmail(),"role_change",user.getUserName(),newRoleName.toString());
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -179,5 +187,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Erole> getAllRoles() {
         return Arrays.asList(Erole.values());
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    public Long countUsers() {
+        return userRepository.count();
+    }
+
+    @Override
+    public User updateUser(Long id, User updateUser, Erole role) {
+
+        return
+                userRepository.findById(id)
+                        .map(user->{
+                            user.setUserName(updateUser.getUserName());
+                            user.setEmail(updateUser.getEmail());
+                            Role rolename = roleRepository.findByRoleName(role).
+                                    orElseThrow(()->new RuntimeException("Role not found"));
+                            Set<Role> roles = new HashSet<>();
+                            roles.add(rolename);
+                            user.setRoles(roles);
+                           return userRepository.save(user);
+                        })
+                .orElseThrow(()->new RuntimeException("User not found"));
+
     }
 }

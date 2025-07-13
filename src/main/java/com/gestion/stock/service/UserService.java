@@ -15,11 +15,14 @@ public interface UserService {
     boolean activateUserAccount(String token);
     List<User> findAllUsers();
     Optional<User> findUserById(Long id);
-    void updateRole(Long userId , Set<Erole> roles);
+    void updateRole(Long userId , Erole roleName);
     void enableUserAccount(Long userId);
     void disableUserAccount(Long userId);
     User saveUser(User user);
     List<Erole> getAllRoles();
+    void deleteUser(Long id);
+    Long countUsers();
+    User updateUser(Long id , User updateUser, Erole role);
 
 
 
